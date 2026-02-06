@@ -35,7 +35,55 @@ node* tree(int n, int arr[]){
     return root;
 }
 
-// to balance a binary tree after making it
+// traversals in a tree, fill the traversal in an array of appropriate size
+
+int pre(int* arr, int i, node* ptr){
+    if (ptr!=NULL){
+        arr[i++] = ptr->val;
+        i = pre(arr,i,ptr->left);
+        i = pre(arr,i,ptr->right);
+    }
+    return i;
+}
+
+int in(int* arr, int i, node* ptr){
+    if (ptr!=NULL){
+        i = in(arr,i,ptr->left);
+        arr[i++] = ptr->val;
+        i = in(arr,i,ptr->right);
+    }
+    return i;
+}
+
+int post(int* arr, int i, node* ptr){
+    if (ptr!=NULL){
+        i = post(arr,i,ptr->left);
+        i = post(arr,i,ptr->right);
+        arr[i++] = ptr->val;
+    }
+    return i;
+}
+
+// number of nodes in a tree using dfs
+int node_count(node* ptr ){
+    if (ptr!=NULL) return 1+node_count(ptr->left)+node_count(ptr->right);
+    return 0;
+}
+
+// to create a balanced bst using a sorted array
+node* balanced_tree(int* arr, int l, int r, node* parent){
+    if (l>r) return NULL;
+    int mid = (r-l)/2+l;
+    node* temp = create(arr[mid],parent);
+    temp->left = balanced_tree(arr,l,mid-1,temp);
+    temp->right = balanced_tree(arr,mid+1,r,temp);
+    return temp;
+}
+
+// balance a given bst
 node* balance(node* root){
-    
+    int nodes = node_count(root);
+    int arr[nodes];
+    in(arr,0,root);
+    return balanced_tree(arr,0,nodes-1,NULL);
 }
