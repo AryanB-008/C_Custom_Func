@@ -87,3 +87,63 @@ node* balance(node* root){
     in(arr,0,root);
     return balanced_tree(arr,0,nodes-1,NULL);
 }
+
+// find a node, null if not found
+node* find(node* root, int n){
+    while(root!=NULL&root->val!=n) root=(root->val>n)?(root->left):(root->right);
+    return root;
+}
+
+// delete a node from a binary tree if its present
+node* deleteNode(node* root, int n) {
+    node* temp = find(root, n);
+    if (temp == NULL) return root;
+    if (temp->right == NULL && temp->left == NULL) {
+        if (root == temp) {
+            free(temp);
+            return NULL;
+        }
+        if (temp->parent->left == temp) temp->parent->left = NULL;
+        else temp->parent->right = NULL;
+        free(temp);
+    }
+    else if (temp->right == NULL || temp->left == NULL) {
+        node* child = (temp->left != NULL) ? temp->left : temp->right;
+        if (temp == root) {
+            root = child;
+            root->parent = NULL;
+        } 
+        else {
+            if (temp->parent->left == temp) temp->parent->left = child;
+            else temp->parent->right = child;
+            child->parent = temp->parent;
+        }
+        free(temp);
+    }
+    else {
+        node* replacement = temp->left;
+        while (replacement->right != NULL) replacement = replacement->right;
+        temp->val = replacement->val;
+        node* replacementChild = replacement->left; 
+        if (replacement != temp->left) replacement->parent->right = replacementChild;
+        else temp->left = replacementChild;
+        if (replacementChild != NULL) replacementChild->parent = replacement->parent;
+        free(replacement);
+    }
+    return root;
+}
+
+//insert a value into the tree, should be distinct
+node* insert(node* root, int n){
+    if (find(root,n)!=NULL) return root;
+    node* temp = root;
+    node* ptr;
+    while(true){
+        if (temp->val>n&&temp->left!=NULL) temp = temp->left;
+        else if (temp->val<n&&temp->right!=NULL) temp = temp->right;
+        else break;
+    }
+    if (temp->val>n) temp->left = create(n,temp);
+    else temp->right = create(n,temp);
+    return root;
+}
