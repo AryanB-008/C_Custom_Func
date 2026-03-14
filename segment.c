@@ -24,19 +24,20 @@ void update(int* t, int i, int val, int n){// i is 0 indexed
 
 int range(int* t, int n, int a, int b){// to give minimum [a,b], 0 indexed
     int m = INT_MAX;
-    a+=n,b+=n;
-    while(a<b){
-        if((a&1)==1) m = min(m,t[a++]);
-        if((b&1)==0) m = min(m,t[b--]);
-        a/=2;
-        b/=2;
+    a+=n;
+    b+=n;
+    while(a<=b){
+        if(a&1) m = min(m,t[a++]);
+        if(!(b&1)) m = min(m,t[b--]);
+        a>>=1;
+        b>>=1;
     }
     return m;
 }
 
 int main(void){
-    int n;
-    scanf("%d",&n);
+    int n,;
+    scanf("%d %d",&n);
     int arr[n];
     for (int i = 0; i<n; i++) scanf("%d",arr+i);
     int* t= build(n,arr);
